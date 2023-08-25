@@ -1,0 +1,76 @@
+ocio_profile_version: 2
+
+environment:
+  {}
+search_path: LUTs
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: sRGB
+  color_timing: sRGB
+  compositing_log: sRGB
+  data: Generic Data
+  default: sRGB
+  default_byte: sRGB
+  default_float: Linear BT.709
+  default_sequencer: sRGB
+  matte_paint: sRGB
+  reference: Linear BT.709
+  scene_linear: Linear BT.709
+  texture_paint: sRGB
+
+file_rules:
+  - !<Rule> {name: Default, colorspace: default}
+
+displays:
+  sRGB:
+    - !<View> {name: Display Native, colorspace: sRGB}
+    - !<View> {name: OpenDRT, colorspace: OpenDRT Base}
+
+active_displays: []
+active_views: []
+
+colorspaces:
+  - !<ColorSpace>
+    name: Linear BT.709
+    aliases: [Linear, Linear Tristimulus]
+    family: Colourspaces
+    equalitygroup: ""
+    bitdepth: unknown
+    description: Open Domain Linear BT.709 Tristimulus
+    isdata: false
+    allocation: uniform
+
+
+  - !<ColorSpace>
+    name: OpenDRT Base
+    family: Imagery
+    equalitygroup: ""
+    bitdepth: unknown
+    description: OpenDRT Base Image Encoding
+    isdata: false
+    allocation: uniform
+    from_scene_reference: !<GroupTransform>
+      children:
+        # Map to a temporary log space
+        - !<MatrixTransform> {matrix: [0.56279692, 0.32353076, 0.11374766, 0.00000000, 0.07769616, 0.74961017, 0.17266308, 0.00000000, 0.06464207, 0.19200710, 0.74330971, 0.00000000, 0.00000000, 0.00000000, 0.00000000, 1.00000000]}
+        - !<FileTransform> {src: Davinci_Intermediate_to_Linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: OpenDrt_v0.2.7.cube, interpolation: tetrahedral}
+
+
+  - !<ColorSpace>
+    name: Generic Data
+    aliases: [Non-Color, Raw]
+    family: Data/Generic Data
+    equalitygroup: ""
+    bitdepth: unknown
+    description: Generic data encoding
+    isdata: true
+    allocation: uniform
+
+
+
+
+
+
